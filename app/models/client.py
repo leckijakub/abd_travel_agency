@@ -7,4 +7,4 @@ class Client(db.Model):
     user = db.relationship('User', back_populates='client')
     address = db.Column(db.String(128), nullable=False)
     phone_number = db.Column(db.String(16), nullable=False)
-    reservations = db.relationship('Reservations',back_populates='client')
+    reservations = db.relationship('Reservation',back_populates='client')

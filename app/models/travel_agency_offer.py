@@ -10,4 +10,4 @@ class Travel_agency_offer(db.Model):
     accomodation = db.Column(db.String(128), nullable=False)
     event = db.Column(db.String(128), nullable=False)
     organizer_id = db.Column(db.Integer, db.ForeignKey('Employee.id'))
-    reservations = db.relationship("Reservations", back_populates='offer')
+    reservations = db.relationship("Reservation", back_populates='offer')

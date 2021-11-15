@@ -12,4 +12,4 @@ class Employee(db.Model):
     id = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
     user = db.relationship('User', back_populates='employee')
     position = db.Column(db.Enum(employee_type), nullable=False)
-    created_reservations = db.relationship("Reservations")
+    created_reservations = db.relationship("Reservation")
