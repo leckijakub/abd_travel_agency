@@ -9,5 +9,7 @@ class employee_type(enum.Enum):
 
 class Employee(db.Model):
     __tablename__ = "Employee"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
+    user = db.relationship('User', back_populates='employee')
     position = db.Column(db.Enum(employee_type), nullable=False)
+    created_reservations = db.relationship("Reservations")
