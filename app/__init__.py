@@ -13,6 +13,8 @@ from app.models.database import db
 from app.models.user import User
 from app.models.client import Client
 from app.models.employee import Employee
+from app.models.reservation import Reservation
+from app.models.travel_agency_offer import Travel_agency_offer
 # from sqlalchemy.orm import relationship
 
 
