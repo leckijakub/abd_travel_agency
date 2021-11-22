@@ -1,0 +1,13 @@
+{% extends 'reservation/base.html' %}
+{% block content %}
+    <ul>
+    {% for reservation in reservations %}
+        <li> Reservation: {{ reservation.id }}
+            <ul>
+                <li> Price: {{ reservation.price }} </li>
+                <li> Status: {{ reservation.status }} </li>
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

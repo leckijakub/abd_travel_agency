@@ -9,12 +9,14 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.routes.book_bp import book_bp
+from app.routes.reservation_bp import reservation_bp
 from app.models.database import db
 from app.models.user import User
 from app.models.client import Client
 from app.models.employee import Employee
 from app.models.reservation import Reservation
 from app.models.travel_agency_offer import Travel_agency_offer
+from app.tests.flask_test import test_start
 # from sqlalchemy.orm import relationship
 
 
@@ -23,6 +25,7 @@ app.config.from_object("app.config.Config")
 db.init_app(app)
 migrate = Migrate(app, db)
 app.register_blueprint(book_bp, url_prefix='/books/')
+app.register_blueprint(reservation_bp, url_prefix='/reservations/')
 
 '''
 Aby stworzyć bazę danych:
@@ -35,6 +38,8 @@ A w konsoli:
     db.drop_all()
     db.create_all()
     db.session.commit()
+Dodawanie rezerwacji
+    db.session.add(Reservation(price=555, status='reservation status', client_id=None, employee_id = None, offer_id = None))
 '''
 
 ### CONTROLLERS
@@ -49,6 +54,11 @@ def clearall():
    db.create_all()
    db.session.commit()
    return "DATABASE CLEARED\n"
+
+@app.route('/test',methods=['GET'])
+def testall():
+   test_start()
+   return "DATABASE TESTED\n"
 
 if __name__ == "__main__":
    app.run(host='0.0.0.0', port=5000, debug=True)
