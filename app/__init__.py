@@ -9,7 +9,6 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from app.routes.book_bp import book_bp
 from app.routes.reservation_bp import reservation_bp
 from app.routes.main_bp import main_bp
 from app.routes.client_bp import client_bp
@@ -30,7 +29,6 @@ app.config.from_object("app.config.Config")
 db.init_app(app)
 migrate = Migrate(app, db)
 app.register_blueprint(main_bp)
-app.register_blueprint(book_bp, url_prefix='/books/')
 app.register_blueprint(reservation_bp, url_prefix='/reservations/')
 app.register_blueprint(client_bp, url_prefix='/client/')
 app.register_blueprint(offer_bp, url_prefix='/offers/')

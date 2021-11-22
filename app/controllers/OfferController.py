@@ -36,7 +36,7 @@ def delete():
     flash("Offer deleted", 'warning')
     return redirect(request.referrer) # go back to the page from which request was posted
 
-
+@login_required
 def from_reservation():
     reservation_id = request.args.get("id")
     if reservation_id is not None:
