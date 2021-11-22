@@ -13,6 +13,7 @@ from app.routes.book_bp import book_bp
 from app.routes.reservation_bp import reservation_bp
 from app.routes.main_bp import main_bp
 from app.routes.client_bp import client_bp
+from app.routes.offer_bp import offer_bp
 from app.models import *
 # from app.models.database import db
 # from app.models.user import User
@@ -32,9 +33,10 @@ app.register_blueprint(main_bp)
 app.register_blueprint(book_bp, url_prefix='/books/')
 app.register_blueprint(reservation_bp, url_prefix='/reservations/')
 app.register_blueprint(client_bp, url_prefix='/client/')
+app.register_blueprint(offer_bp, url_prefix='/offers/')
 
 login_manager = LoginManager(app)
-login_manager.login_view = 'main_bp.login'
+login_manager.login_view = 'main.login'
 
 '''
 Aby stworzyć bazę danych:

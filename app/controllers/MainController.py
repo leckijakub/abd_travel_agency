@@ -7,10 +7,10 @@ def index():
     if current_user.is_authenticated:
         if isinstance(current_user, Client):
             # return "Client view."
-            return render_template('base.html',name=current_user.name)
+            return render_template('client/index.html',name=current_user.name)
             # return redirect(url_for(''))
         elif isinstance(current_user, Employee):
-            return "Employee view."
+            return render_template('employee/index.html',name=current_user.name)
         else:
             return "Logout."
     else:
@@ -18,9 +18,10 @@ def index():
 
 
 def login():
+    if current_user.is_authenticated:
+        return redirect('/')
     return render_template('login.html')
 
-# @auth.route('/login-post', methods=['POST'])
 def login_post():
     email = request.form.get('email')
     password = request.form.get('password')

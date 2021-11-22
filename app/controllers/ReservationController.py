@@ -2,17 +2,21 @@
 from app.models.database import db
 from app.models.reservation import Reservation
 from flask import render_template, request, jsonify, flash, redirect
+from flask_login import current_user, login_required
 
 def index():
-    reservation_id = request.args.get('id')
+    reservation_id = request.args.get("id")
+    # print("\n\n\n\n\n")
+    # print(f"reservation id : {reservation_id}")
+    # print("\n\n\n\n\n")
     if reservation_id is not None:
-        reservation = db.session.query(Reservation).get(int(reservation_id))
+        reservation = current_user.reservations.filter_by(id=reservation_id).first()
         if reservation is not None:
-            return jsonify(Reservation.query.get(int(reservation_id)).serialize)
+            return render_template('reservation/details.html', reservation=reservation.serialize, name=current_user.name)
         else:
             return f"No reservation with id = {reservation_id}."
     else:
-        return render_template('client/reservations.html', reservations=[reservation.serialize for reservation in Reservation.query.all()])
+        return render_template('client/reservations.html', reservations=[reservation.serialize for reservation in Reservation.query.all()], name=current_user.name)
         # return jsonify([book.serialize for book in Book.query.all()])
 
 def store(stat):
@@ -20,6 +24,18 @@ def store(stat):
     db.session.add(reservation)
     db.session.commit()
     return jsonify(reservation.serialize)
+
+@login_required
+def create():
+    offer_id = request.form.get('offer_id')
+    if offer_id is None:
+        flash(f"Offer {offer_id} does not exists!")
+    else:
+        reservation = Reservation(price=999, status='niezatwierdzona', client_id=current_user.id, employee_id=None, offer_id=offer_id)
+        db.session.add(reservation)
+        db.session.commit()
+        flash("Offer reserved",'info')
+    return redirect(request.referrer) # go back to the page from which request was posted
 
 def update(reservation_id):
     new_status = request.args.get('status')
@@ -50,5 +66,5 @@ def delete(reservation_id):
     except Exception as e:
         db.session.rollback()
         raise e
-    flash("reservation deleted")
-    return redirect(request.referrer)
+    flash("reservation deleted", 'warning')
+    return redirect(request.referrer) # go back to the page from which request was posted

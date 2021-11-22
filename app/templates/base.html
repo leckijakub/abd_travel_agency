@@ -7,8 +7,19 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <div class="level-right" style="padding-right: 30px; padding-bottom: 5px; font-size: large">
-            &nbsp;
+        <div class="level-left" style="font-size: large">
+            <a href="/" class="level-left">
+                <span class="icon-text" style="padding-left: 5px">
+                    <span class="icon">
+                      <i class="fas fa fa-home"></i>
+                    </span>
+                    <span style="font-size: large">Home</span>
+                  </span>
+                </a>
+        </div>
+        <!-- padding-right: 30px; padding-bottom: 5px;  -->
+        <div class="level-right" style="font-size: large">
+            <!-- &nbsp; -->
             {% if current_user.is_authenticated %}
             <span class="icon-text" style="padding-right: 5px">
                 <span class="icon">
@@ -16,21 +27,29 @@
                 </span>
                 <span>Hello {{ name }}!</span>
             </span>
-            <form action="/logout">
+            <form method="POST" action="/logout">
                 <button class="button is-info" type="submit" style="font-size: large">Logout</button>
             </form>
             {% endif %}
         </div>
 
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <div class="notification is-danger has-text-centered">
-            {{ messages[0] }}
-        </div>
-        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% with category, message = messages[0] %}
+                    {% if category == 'info' %}
+                        <div class="notification is-info has-text-centered">
+                    {% elif category == 'warning' %}
+                        <div class="notification is-warning has-text-centered">
+                    {% else %}
+                        <div class="notification is-danger has-text-centered"></div>
+                    {% endif %}
+                    {{ message }}
+                    </div>
+                {% endwith %}
+            {% endif %}
         {% endwith %}
 
-        <section class="section has-text-centered">
+        <section class="section has-text-centered is-centered">
             <div>
                 {% block content %}
                 {% endblock %}

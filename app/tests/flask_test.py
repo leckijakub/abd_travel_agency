@@ -12,12 +12,17 @@ def test_start():
     db.session.commit()
     client1 = Client(uid="1", email="a@a", password=generate_password_hash("a", method='sha256'),name="Bob",surname="Smith", address="tu",phone_number="666 666 666")
     db.session.add(client1)
-    db.session.add(Employee(uid="1", email="b@b", password=generate_password_hash("a", method='sha256'),name="Bob",surname="Smith", position=employee_type.Administrator))
+    db.session.add(Employee(uid="1", email="b@b", password=generate_password_hash("a", method='sha256'),name="Mark",surname="Smith", position=employee_type.Administrator))
+    offer1 = Travel_agency_offer(uid=1, transport='z buta', accommodation='pod drzewem', event='marsz',organizer_id=None)
+    db.session.add(offer1)
     db.session.commit()
 
     db.session.add(Reservation(price=555, status='reservation 1', client_id=None, employee_id = None, offer_id = None))
     db.session.add(Reservation(price=123, status='reservation 2', client_id=None, employee_id = None, offer_id = None))
-    db.session.add(Reservation(price=444, status='reservation 3', client_id=client1.id, employee_id = None, offer_id = None))
+    db.session.add(Reservation(price=444, status='reservation 3', client_id=client1.id, employee_id = None, offer_id = offer1.id))
+    print("\n\n\n\n########################################")
+    print(offer1.serialize)
+    print("\n\n\n\n########################################")
 
     reservation = db.session.query(Reservation).get(int(1))
     if reservation is not None:

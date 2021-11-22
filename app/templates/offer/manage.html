@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero is-info">
+    <div class="hero-body has-text-centered">
+        <p class = "title" style="font-size:xxx-large;">
+            Travel Offers
+        </p>
+    </div>
+</section>
+<a class='button is-primary' href='/offers/create'>
+Create a new offer
+</a>
+<ul>
+    {% for offer in offers %}
+        <table class="table has-text-centered" style=" margin-left: auto; margin-right: auto;">
+            <thead>
+              <tr>
+                <th><abbr title="Number">No.</abbr></th>
+                <th>Event</th>
+                <th>Accomodation</th>
+                <th>Transport</th>
+                <th>Reserve</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>{{ loop.index0 }}</th>
+                <td>{{ offer.event }}</td>
+                <td>{{ offer.accommodation }}</td>
+                <td>{{ offer.transport }}</td>
+                <td>
+                  <div class="buttons is-centered">
+                    <form method="GET" action="/offers/edit">
+                      <input type = "hidden" name = "id" value = "{{ offer.id }}" />
+                      <button class="button is-info">
+                        Edit
+                      </button>
+                    </form>
+                    <form method="POST" action="/offers/delete">
+                      <input type = "hidden" name = "id" value = "{{ offer.id }}" />
+                      <button class="button is-danger">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+    {% endfor %}
+    </ul>
+{% endblock %}
