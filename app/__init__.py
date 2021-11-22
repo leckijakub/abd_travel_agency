@@ -8,14 +8,18 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_login import LoginManager
 from app.routes.book_bp import book_bp
 from app.routes.reservation_bp import reservation_bp
-from app.models.database import db
-from app.models.user import User
-from app.models.client import Client
-from app.models.employee import Employee
-from app.models.reservation import Reservation
-from app.models.travel_agency_offer import Travel_agency_offer
+from app.routes.main_bp import main_bp
+from app.routes.client_bp import client_bp
+from app.models import *
+# from app.models.database import db
+# from app.models.user import User
+# from app.models.client import Client
+# from app.models.employee import Employee
+# from app.models.reservation import Reservation
+# from app.models.travel_agency_offer import Travel_agency_offer
 from app.tests.flask_test import test_start
 # from sqlalchemy.orm import relationship
 
@@ -24,8 +28,13 @@ app = Flask(__name__)
 app.config.from_object("app.config.Config")
 db.init_app(app)
 migrate = Migrate(app, db)
+app.register_blueprint(main_bp)
 app.register_blueprint(book_bp, url_prefix='/books/')
 app.register_blueprint(reservation_bp, url_prefix='/reservations/')
+app.register_blueprint(client_bp, url_prefix='/client/')
+
+login_manager = LoginManager(app)
+login_manager.login_view = 'main_bp.login'
 
 '''
 Aby stworzyć bazę danych:
@@ -41,6 +50,10 @@ A w konsoli:
 Dodawanie rezerwacji
     db.session.add(Reservation(price=555, status='reservation status', client_id=None, employee_id = None, offer_id = None))
 '''
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 ### CONTROLLERS
 

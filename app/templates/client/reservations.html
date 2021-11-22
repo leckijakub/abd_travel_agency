@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero is-info">
+    <div class="hero-body has-text-centered">
+        <p class = "title" style="font-size:xxx-large;">
+            Your Reservations
+        </p>
+    </div>
+</section>
+<ul>
+    {% for reservation in reservations %}
+        <!-- <li> Reservation: {{ reservation.id }}
+            <ul>
+                <li> Price: {{ reservation.price }} </li>
+                <li> Status: {{ reservation.status }} </li>
+                <li> Client id: {{ reservation.client_id }} </li>
+            </ul>
+        </li> -->
+        <table class="table has-text-centered" style=" margin-left: auto; margin-right: auto;">
+            <thead>
+              <tr>
+                <th><abbr title="Number">No.</abbr></th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Button</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>{{ loop.index0 }}</th>
+                <td>{{ reservation.price }}</td>
+                <td>{{ reservation.status }}</td>
+                <td>
+                  <form method="POST" action="/reservations/delete/{{ reservation.id }}" class="box">
+                    <input type = "hidden" name = "id" value = "{{ reservation.id }}" />
+                    <button class="button is-danger">
+                      Cancel
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+    {% endfor %}
+    </ul>
+{% endblock %}

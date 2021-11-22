@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from app.models.database import db
 from app.models.reservation import Reservation
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, flash, redirect
 
 def index():
     reservation_id = request.args.get('id')
@@ -12,7 +12,7 @@ def index():
         else:
             return f"No reservation with id = {reservation_id}."
     else:
-        return render_template('reservation/reservations.html', reservations=[reservation.serialize for reservation in Reservation.query.all()])
+        return render_template('client/reservations.html', reservations=[reservation.serialize for reservation in Reservation.query.all()])
         # return jsonify([book.serialize for book in Book.query.all()])
 
 def store(stat):
@@ -50,4 +50,5 @@ def delete(reservation_id):
     except Exception as e:
         db.session.rollback()
         raise e
-    return "reservation deleted"    
+    flash("reservation deleted")
+    return redirect(request.referrer)

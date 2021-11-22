@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero is-primary is-fullheight">
+    <div class="hero-bodyhas-text-centered" style=" padding-bottom: 10px;">
+        <p class = "title">
+            Travel Agency
+        </p>
+        <p class = "subtitle">
+            Jakub Łęcki, Kacper Źiółkowski
+        </p>
+        <div class="level-right" style="padding-right: 30px; padding-bottom: 5px; font-size: large">
+            &nbsp;
+         </div>
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+            <form method="POST" action="/login-post" class="box">
+              <div class="field">
+                <label for="" class="label">Email</label>
+                <div class="control has-icons-left">
+                  <input name="email" type="email" placeholder="e.g. bobsmith@gmail.com" class="input" required>
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-envelope"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="" class="label">Password</label>
+                <div class="control has-icons-left">
+                  <input name="password" type="password" placeholder="*******" class="input" required>
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="" class="checkbox">
+                  <input type="checkbox">
+                 Remember me
+                </label>
+              </div>
+              <div class="field">
+                <button class="button is-success">
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<!-- <div class="column is-4 is-offset-4">
+    <h3 style="font-size: xx-large; padding-bottom: 5px;">Logowanie</h3>
+    <div class="box">
+        <form method="POST" action="/login-post">
+            <div class="field">
+                <input class="input" required="required" type="text" name="login" placeholder="Login" >
+            </div>
+            <div class="field">
+                <input class="input" required="required" type="password" name="password" placeholder="Hasło">
+            </div>
+            <button class="button is-block is-success is-large is-fullwidth">Login</button>
+        </form>
+    </div>
+
+    <h3 style="font-size: x-large; padding-bottom: 5px;">Nie posiadasz konta? Zarejestruj się!</h3>
+    <div class="box">
+        <form method="POST" action="/register-post">
+            <div class="field">
+                <input class="input" required="required" type="text" name="name" placeholder="Imie">
+            </div>
+            <div class="field">
+                <input class="input" required="required" type="text" name="surname" placeholder="Nazwisko">
+            </div>
+            <div class="field">
+                <input class="input" required="required" type="text" name="login" placeholder="Login">
+            </div>
+            <div class="field">
+                <input class="input" required="required" type="password" name="password" placeholder="Hasło">
+            </div>
+            <div class="field">
+                <input class="input" required="required" type="password" name="confirm_password" placeholder="Powtórz hasło">
+            </div>
+
+            <div class="field">
+                <label class="checkbox">
+                    <input type="checkbox" required="required">
+                    Zapoznałem się z regulaminem
+                </label>
+            </div>
+
+            <button class="button is-block is-success is-large is-fullwidth">Rejestruj</button>
+        </form>
+    </div>
+</div> -->
+{% endblock %}

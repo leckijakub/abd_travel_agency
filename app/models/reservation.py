@@ -18,4 +18,5 @@ class Reservation(db.Model):
             'id': self.id,
             'price': self.price,
             'status': self.status,
+            'client_id': self.client_id
         }
