@@ -14,14 +14,7 @@ from app.routes.main_bp import main_bp
 from app.routes.client_bp import client_bp
 from app.routes.offer_bp import offer_bp
 from app.models import *
-# from app.models.database import db
-# from app.models.user import User
-# from app.models.client import Client
-# from app.models.employee import Employee
-# from app.models.reservation import Reservation
-# from app.models.travel_agency_offer import Travel_agency_offer
 from app.tests.flask_test import test_start
-# from sqlalchemy.orm import relationship
 
 
 app = Flask(__name__)
