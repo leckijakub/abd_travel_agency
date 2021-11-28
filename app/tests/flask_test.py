@@ -11,7 +11,8 @@ from urllib.parse import urlparse
 import psycopg2
 import os
 import time
-
+import csv
+import os.path
 
 class bcolors:
     HEADER = '\033[95m'
@@ -29,6 +30,15 @@ def test_start():
     orm1_time, orm2_time = test_orm()
     test_init()
     sql1_time, sql2_time = test_sql()
+    initfile = False
+    if not os.path.exists('/usr/src/app/result.csv'):
+        initfile = True
+
+    with open('/usr/src/app/result.csv', mode='a') as result_file:
+        result_writer = csv.writer(result_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        if initfile:
+            result_writer.writerow(["ORM1", 'SQL1', 'ORM2', 'SQL2'])
+        result_writer.writerow([str(orm1_time)[:16], str(sql1_time)[:16], str(orm2_time)[:16], str(sql2_time)[:16]])
 
     print(f"\n\n{bcolors.HEADER}#################### TEST SUMAMRY ####################\n{bcolors.ENDC}")
     print(f"""
@@ -221,12 +231,21 @@ def test_sql():
     print (insert_offer_str)
 
     t0 = time.time()
-    cursor.execute( f"""
-        WITH insert_query AS
-        ({insert_offer_str} RETURNING "Travel_agency_offer".id)
-         INSERT INTO "Reservation" (client_id, price, status, offer_id) SELECT "Client".id, 0, 'accepted', insert_query.id AS id_1
-        FROM insert_query, "User" JOIN "Client" ON "User".id = "Client".id JOIN ("User" AS "User_1" JOIN "Employee" AS "Employee_1" ON "User_1".id = "Employee_1".id) ON "User".uid = "User_1".uid
-        """)
+    cursor.execute(f"""
+    WITH insert_query
+        AS ({insert_offer_str}
+        RETURNING "Travel_agency_offer".id)
+    INSERT INTO "Reservation" (client_id, price, status, offer_id)
+    SELECT "Client".id, 0, 'accepted', insert_query.id AS id_1
+    FROM insert_query, "User"
+    JOIN "Client"
+        ON "User".id = "Client".id
+    JOIN ("User" AS "User_1"
+        JOIN "Employee" AS "Employee_1"
+            ON "User_1".id = "Employee_1".id
+        )
+        ON "User".uid = "User_1".uid
+    """)
     connection.commit()
     t1 = time.time() - t0
 
@@ -234,12 +253,33 @@ def test_sql():
 
     t0 = time.time()
     cursor.execute("""
-        SELECT "Travel_agency_offer".id AS "Travel_agency_offer_id", "Travel_agency_offer".uid AS "Travel_agency_offer_uid", "Travel_agency_offer".transport AS "Travel_agency_offer_transport", "Travel_agency_offer".accommodation AS "Travel_agency_offer_accommodation", "Travel_agency_offer".event AS "Travel_agency_offer_event", "Travel_agency_offer".organizer_id AS "Travel_agency_offer_organizer_id"
-        FROM "User" JOIN "Client" ON "User".id = "Client".id JOIN "Reservation" ON "Client".id = "Reservation".client_id JOIN "Travel_agency_offer" ON "Reservation".offer_id = "Travel_agency_offer".id
-        WHERE "Client".address = 'Warszawa' GROUP BY "Travel_agency_offer".id, "Travel_agency_offer".uid, "Travel_agency_offer".transport, "Travel_agency_offer".accommodation, "Travel_agency_offer".event, "Travel_agency_offer".organizer_id ORDER BY count("Client".id) DESC
-        LIMIT 1
-        """)
-    connection.commit()
+SELECT
+    "Travel_agency_offer".id
+        AS "Travel_agency_offer_id",
+    "Travel_agency_offer".uid
+        AS "Travel_agency_offer_uid",
+    "Travel_agency_offer".transport
+        AS "Travel_agency_offer_transport",
+    "Travel_agency_offer".accommodation
+        AS "Travel_agency_offer_accommodation",
+    "Travel_agency_offer".event
+        AS "Travel_agency_offer_event",
+    "Travel_agency_offer".organizer_id
+        AS "Travel_agency_offer_organizer_id"
+FROM "User"
+JOIN "Client"
+    ON "User".id = "Client".id
+JOIN "Reservation"
+    ON "Client".id = "Reservation".client_id
+JOIN "Travel_agency_offer"
+    ON "Reservation".offer_id = "Travel_agency_offer".id
+WHERE "Client".address = 'Warszawa'
+GROUP BY
+    "Travel_agency_offer".id
+ORDER BY count("Client".id) DESC
+LIMIT 1
+       """)
+    # connection.commit()
     t2 = time.time() - t0
     print(cursor.fetchall())
 
