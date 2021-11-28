@@ -25,20 +25,21 @@ def test_start():
     db.create_all()
     db.session.commit()
     print(f"\n\n{bcolors.OKCYAN}Adding some users, an offer, and a reservation:\n{bcolors.ENDC}")
-    db.session.add_all([
-        Client(uid="1", email="a@a", password=generate_password_hash("a", method='sha256'),name="Bob",surname="Smith", address="tu",phone_number="666 666 666"),
-        Client(uid="2", email="a1@a", password=generate_password_hash("a", method='sha256'),name="Keanu",surname="Reeves", address="Warszawa",phone_number="420 691 337"),
-        Client(uid="3", email="a2@a", password=generate_password_hash("a", method='sha256'),name="Thomas",surname="Anderson", address="Warszawa",phone_number="691 337 420"),
-        Client(uid="4", email="a3@a", password=generate_password_hash("a", method='sha256'),name="John",surname="Wick", address="Warszawa",phone_number="133 742 069"),
-        Client(uid="5", email="a4@a", password=generate_password_hash("a", method='sha256'),name="John",surname="Constantine", address="Warszawa",phone_number="213 769 420")
-    ])
 
-    db.session.add_all([
-        Employee(uid="emp1", email="b@b", password=generate_password_hash("a", method='sha256'),name="Mark",surname="Smith", position=employee_type.Administrator),
-        Employee(uid="emp2", email="b1@b", password=generate_password_hash("a", method='sha256'),name="DC",surname="Joker", position=employee_type.Animator),
-        Employee(uid="emp3", email="b2@b", password=generate_password_hash("a", method='sha256'),name="Bruce",surname="Wayne a.k.a. Batman", position=employee_type.Service_organizer),
-        Employee(uid="emp4", email="b3@b", password=generate_password_hash("a", method='sha256'),name="Magnus",surname="Carlsen", position=employee_type.Reservation_empolyee)
-    ])
+    emp1 = Employee(uid="emp1", email="b@b", password=generate_password_hash("a", method='sha256'),name="Mark",surname="Smith", position=employee_type.Administrator)
+    emp2 = Employee(uid="emp2", email="b1@b", password=generate_password_hash("a", method='sha256'),name="DC",surname="Joker", position=employee_type.Animator)
+    emp3 = Employee(uid="emp3", email="b2@b", password=generate_password_hash("a", method='sha256'),name="Bruce",surname="Wayne a.k.a. Batman", position=employee_type.Service_organizer)
+    emp4 = Employee(uid="emp4", email="b3@b", password=generate_password_hash("a", method='sha256'),name="Magnus",surname="Carlsen", position=employee_type.Reservation_empolyee)
+    db.session.add_all([emp1, emp2, emp3, emp4])
+    db.session.commit()
+
+    client1 = Client(uid="1", email="a@a", password=generate_password_hash("a", method='sha256'),name="Bob", surname="Smith", address="tu",phone_number="666 666 666")
+    client2 = Client(uid="2", email="a1@a", password=generate_password_hash("a", method='sha256'),name="Keanu", surname="Reeves", address="Warszawa",phone_number="420 691 337")
+    client3 = Client(uid=emp3.uid, email="b3@bprivate", password=generate_password_hash("a", method='sha256'),name=emp3.name, surname=emp3.surname, address="Warszawa",phone_number="691 337 420")
+    client4 = Client(uid="4", email="a3@a", password=generate_password_hash("a", method='sha256'),name="John", surname="Wick", address="Warszawa",phone_number="133 742 069")
+    client5 = Client(uid="5", email="a4@a", password=generate_password_hash("a", method='sha256'),name="John", surname="Constantine", address="Warszawa",phone_number="213 769 420")
+    db.session.add_all([client1, client2, client3, client4, client5])
+
     offer1 = Travel_agency_offer(uid=1, transport='z buta', accommodation='pod drzewem', event='marsz',organizer_id=None)
     db.session.add(offer1)
     db.session.commit()
