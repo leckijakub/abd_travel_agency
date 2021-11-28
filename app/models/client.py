@@ -13,3 +13,17 @@ class Client(User):
     __mapper_args__ = {
         'polymorphic_identity':'Client',
     }
+    
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'uid': self.uid,
+            'email': self.email,
+            #'password': self.password,
+            'name': self.name,
+            'surname': self.surname,
+            'type': self.type,
+            'phone_number': self.phone_number,
+            'address': self.address
+        }

@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import current_user, login_required
-from app.models import db, Travel_agency_offer, Client
+from app.models import db, Travel_agency_offer, Client, Reservation
 import uuid
 
 @login_required

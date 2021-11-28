@@ -1,6 +1,5 @@
 from app.models.database import db
 
-
 class Travel_agency_offer(db.Model):
     __tablename__ = "Travel_agency_offer"
     travel_agency_name = "My Travel Agency"
