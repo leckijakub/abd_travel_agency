@@ -6,7 +6,7 @@ import uuid
 @login_required
 def index():
     offers = Travel_agency_offer.query.all()
-    return render_template('offer/index.html', offers=[offer.serialize for offer in offers])
+    return render_template('offer/index.html', offers=[offer.serialize for offer in offers], name=current_user.name)
 
 
 @login_required
@@ -14,7 +14,7 @@ def manage():
     if isinstance(current_user, Client):
         return "Insufficient priviliges!"
     offers = Travel_agency_offer.query.all()
-    return render_template('offer/manage.html', offers=[offer.serialize for offer in offers])
+    return render_template('offer/manage.html', offers=[offer.serialize for offer in offers], name=current_user.name)
 
 
 @login_required
