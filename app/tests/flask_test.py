@@ -1,3 +1,4 @@
+from sqlalchemy.sql.expression import join
 from app.models.database import db
 from app.models.reservation import Reservation
 from app.models.user import User
@@ -5,34 +6,113 @@ from app.models.client import Client
 from app.models.employee import Employee, employee_type
 from app.models.travel_agency_offer import Travel_agency_offer
 from werkzeug.security import generate_password_hash
+import json
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 def test_start():
+    print(f"\n{bcolors.WARNING}WARNING: Testing database... may result in fatal errors...{bcolors.ENDC}\n")
     db.drop_all()
     db.create_all()
     db.session.commit()
-    client1 = Client(uid="1", email="a@a", password=generate_password_hash("a", method='sha256'),name="Bob",surname="Smith", address="tu",phone_number="666 666 666")
-    db.session.add(client1)
-    db.session.add(Employee(uid="1", email="b@b", password=generate_password_hash("a", method='sha256'),name="Mark",surname="Smith", position=employee_type.Administrator))
+    print(f"\n\n{bcolors.OKCYAN}Adding some users, an offer, and a reservation:\n{bcolors.ENDC}")
+    db.session.add_all([
+        Client(uid="1", email="a@a", password=generate_password_hash("a", method='sha256'),name="Bob",surname="Smith", address="tu",phone_number="666 666 666"),
+        Client(uid="2", email="a1@a", password=generate_password_hash("a", method='sha256'),name="Keanu",surname="Reeves", address="Warszawa",phone_number="420 691 337"),
+        Client(uid="3", email="a2@a", password=generate_password_hash("a", method='sha256'),name="Thomas",surname="Anderson", address="Warszawa",phone_number="691 337 420"),
+        Client(uid="4", email="a3@a", password=generate_password_hash("a", method='sha256'),name="John",surname="Wick", address="Warszawa",phone_number="133 742 069"),
+        Client(uid="5", email="a4@a", password=generate_password_hash("a", method='sha256'),name="John",surname="Constantine", address="Warszawa",phone_number="213 769 420")
+    ])
+
+    db.session.add_all([
+        Employee(uid="emp1", email="b@b", password=generate_password_hash("a", method='sha256'),name="Mark",surname="Smith", position=employee_type.Administrator),
+        Employee(uid="emp2", email="b1@b", password=generate_password_hash("a", method='sha256'),name="DC",surname="Joker", position=employee_type.Animator),
+        Employee(uid="emp3", email="b2@b", password=generate_password_hash("a", method='sha256'),name="Bruce",surname="Wayne a.k.a. Batman", position=employee_type.Service_organizer),
+        Employee(uid="emp4", email="b3@b", password=generate_password_hash("a", method='sha256'),name="Magnus",surname="Carlsen", position=employee_type.Reservation_empolyee)
+    ])
     offer1 = Travel_agency_offer(uid=1, transport='z buta', accommodation='pod drzewem', event='marsz',organizer_id=None)
     db.session.add(offer1)
     db.session.commit()
-
-    db.session.add(Reservation(price=555, status='reservation 1', client_id=None, employee_id = None, offer_id = None))
-    db.session.add(Reservation(price=123, status='reservation 2', client_id=None, employee_id = None, offer_id = None))
-    db.session.add(Reservation(price=444, status='reservation 3', client_id=client1.id, employee_id = None, offer_id = offer1.id))
-    print("\n\n\n\n########################################")
-    print(offer1.serialize)
-    print("\n\n\n\n########################################")
-
-    reservation = db.session.query(Reservation).get(int(1))
-    if reservation is not None:
-        db.session.delete(reservation)
-
-
-    reservation = db.session.query(Reservation).get(int(2))
-    if reservation is not None:
-        reservation.status = 'updated'
-        reservation.price = 5
-        db.session.commit()
-
+    db.session.add(Reservation(price=444, status='test offer', client_id=Client.query.first().id, employee_id = None, offer_id = offer1.id))
     db.session.commit()
+
+    #json z pliku + nazwy tablic do insertowania ze zwracaniem kolumn
+    jfile = open("tests/offer.json", "r")
+    jobj = json.loads(jfile.read())
+    offers = db.metadata.tables['Travel_agency_offer']
+    reservations = db.metadata.tables['Reservation']
+    employees = db.metadata.tables['Employee']
+
+    from sqlalchemy import select, literal
+
+    kobyla = reservations.insert().from_select(
+        ['client_id', 'price', 'status', 'offer_id'],
+        select(
+            employees.c.id,
+            literal("0"),
+            literal("accepted"),
+            offers.insert().values(**jobj).returning(Travel_agency_offer.id).cte('distinct_query')
+        )
+    )
+
+    print(f"\n\n{bcolors.HEADER}#################### QUERY 1 ####################\n{bcolors.ENDC}")
+    print(str(kobyla)+"\n\n\n")
+    db.session.execute(kobyla)
+    db.session.commit()
+
+    print(f"\n\n{bcolors.OKCYAN}Querying users and offers for new reservations:{bcolors.ENDC}\n")
+    users = User.query.all()
+    offers = Travel_agency_offer.query.all()
+
+    print(f"\n\n{bcolors.OKCYAN}Adding more reservations:{bcolors.ENDC}\n")
+    db.session.add_all([
+        Reservation(price=444, status='test offer', client_id=users[1].id, employee_id = None, offer_id = offers[0].id),
+        Reservation(price=444, status='test offer', client_id=users[2].id, employee_id = None, offer_id = offers[1].id),
+        Reservation(price=444, status='test offer', client_id=users[3].id, employee_id = None, offer_id = offers[1].id),
+        Reservation(price=444, status='test offer', client_id=users[4].id, employee_id = None, offer_id = offers[1].id)
+    ])
+    db.session.commit()
+
+    print(f"\n{bcolors.OKGREEN}Querying reservations:{bcolors.ENDC}\n")
+    reservations = db.session.query(Reservation).all()
+    print(f"\n{bcolors.OKGREEN}Reservations result:\n{bcolors.ENDC}")
+    [print(reservation.serialize) for reservation in reservations]
+
+    print(f"\n{bcolors.OKGREEN}Querying offers:{bcolors.ENDC}\n")
+    offers = db.session.query(Travel_agency_offer).all()
+    print(f"\n{bcolors.OKGREEN}Offers result:\n{bcolors.ENDC}\n")
+    [print(offer.serialize) for offer in offers]
+
+    print(f"\n{bcolors.OKGREEN}Querying clients:{bcolors.ENDC}\n")
+    clients = db.session.query(Client).filter(Client.address == 'Warszawa').all()
+    print(f"\n{bcolors.OKGREEN}Clients result:\n{bcolors.ENDC}\n")
+    [print(client.serialize) for client in clients]
+
+    from sqlalchemy import func
+
+    print(f"\n\n{bcolors.HEADER}#################### QUERY 2 ####################\n{bcolors.ENDC}")
+    bestoffer = db.session.query(
+        Travel_agency_offer
+    ).select_from(
+        Client
+    ).filter(
+        Client.address == 'Warszawa'
+    ).join(
+        Reservation, Client.id == Reservation.client_id
+    ).join(
+        Travel_agency_offer, Reservation.offer_id == Travel_agency_offer.id
+    ).group_by(
+        Travel_agency_offer
+    ).order_by(func.count(Client.id).desc()).first()
+
+    print(f"\n{bcolors.FAIL}Most popular offer among clients living in Warsaw: {bcolors.ENDC}" + str(bestoffer.serialize) + '\n')
+

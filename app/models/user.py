@@ -11,9 +11,9 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(128), nullable=False)
     name = db.Column(db.String(64), nullable=False)
     surname = db.Column(db.String(64), nullable=False)
-    # client = db.relationship('Client', back_populates='user', uselist=False)
-    # employee = db.relationship('Employee', back_populates='user', uselist=False)
     type = db.Column(db.String(50))
+    # client = db.relationship('Client', back_populates='user', uselist=False)
+    # employee = db.relationship('Employee', back_populates='user', uselist=False)#
     __mapper_args__ = {
         'polymorphic_identity':'User',
         'polymorphic_on':type
@@ -23,5 +23,10 @@ class User(UserMixin, db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'title': self.title,
+            'uid': self.uid,
+            'email': self.email,
+            'password': self.password,
+            'name': self.name,
+            'surname': self.surname,
+            'type': self.type
         }
