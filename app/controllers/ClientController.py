@@ -13,5 +13,5 @@ def index():
 def reservations():
     if isinstance(current_user, Employee):
         return "Insufficient priviliges!"
-    reservations = current_user.reservations.all()
+    reservations = current_user.reservations
     return render_template('client/reservations.html', reservations=[reservation.serialize for reservation in reservations], name=current_user.name)
