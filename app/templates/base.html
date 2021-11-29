@@ -7,44 +7,57 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <div class="level-left" style="font-size: large">
-            <a href="/" class="level-left">
-                <span class="icon-text" style="padding-left: 5px">
-                    <span class="icon">
-                      <i class="fas fa fa-home"></i>
-                    </span>
-                    <span style="font-size: large">Home</span>
-                  </span>
-                </a>
-        </div>
-        <!-- padding-right: 30px; padding-bottom: 5px;  -->
-        <div class="level-right" style="font-size: large">
-            <!-- &nbsp; -->
+        <div style="width:100%">
+            &nbsp;
+            <div style="display:inline-block; width:12%">
+                <div class="level-left" style="font-size: xx-large">
+                    <a href="/" class="level-left">
+                        <span class="icon-text" style="padding-left: 5px">
+                            <span class="icon">
+                              <i class="fas fa fa-home"></i>
+                            </span>
+                            <span style="font-size: xx-large">Home</span>
+                          </span>
+                        </a>
+                </div>
+            </div>
+            <!-- padding-right: 30px; padding-bottom: 5px;  -->
             {% if current_user.is_authenticated %}
-            <span class="icon-text" style="padding-right: 5px">
-                <span class="icon">
-                    <i class="fas fa fa-user"></i>
-                </span>
-                <span>Hello {{ name }}!</span>
-            </span>
-            <form method="POST" action="/logout">
-                <button class="button is-info" type="submit" style="font-size: large">Logout</button>
-            </form>
+            <div style="display:inline-block; width:82%">
+                <div class="level-right" style="font-size: large">
+                    <!-- &nbsp; -->
+                    <span class="icon-text" style="padding-right: 5px">
+                        <span class="icon">
+                            <i class="fas fa fa-user"></i>
+                        </span>
+                        <span style="font-size: xx-large">Hello {{ name }}!</span>
+                    </span>
+                    <form method="POST" action="/logout">
+                        <button class="button is-info" type="submit" style="font-size: large">Logout</button>
+                    </form>
+                </div>
+            
+            </div>
             {% endif %}
         </div>
+        
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% with category, message = messages[0] %}
                     {% if category == 'info' %}
                         <div class="notification is-info has-text-centered">
+                            {{ message }}
+                            </div>
                     {% elif category == 'warning' %}
                         <div class="notification is-warning has-text-centered">
+                            {{ message }}
+                            </div>
                     {% else %}
-                        <div class="notification is-danger has-text-centered"></div>
+                        <div class="notification is-danger has-text-centered">
+                            {{ message }}
+                            </div>
                     {% endif %}
-                    {{ message }}
-                    </div>
                 {% endwith %}
             {% endif %}
         {% endwith %}

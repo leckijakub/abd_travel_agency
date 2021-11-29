@@ -18,5 +18,6 @@ class Travel_agency_offer(db.Model):
             'id': self.id,
             'transport': self.transport,
             'accommodation': self.accommodation,
-            'event': self.event
+            'event': self.event,
+            'travel_agency_name': self.travel_agency_name
         }

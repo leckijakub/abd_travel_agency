@@ -3,10 +3,25 @@
 {% block content %}
 <section class="hero is-info">
     <div class="hero-body has-text-centered">
-        <p class = "title" style="font-size:xxx-large;">
-            Offer details
-        </p>
+      <p class = "title" style="font-size:xxx-large;">
+          Offer details
+      </p>
     </div>
+</section>
+<section class="hero is-info">
+  <div class="buttons is-centered">
+    <div class="button is-info">
+      <p class = "title" style="font-size:x-large;">
+        Offer id: {{ offer.id }}
+      </p>
+    </div> 
+    <div class="button is-info">
+      <p class = "title" style="font-size:x-large;">
+        Agency name: {{ offer.travel_agency_name }}
+      </p>
+    </div> 
+  </div>
+  <br/>
 </section>
 &nbsp;
 
